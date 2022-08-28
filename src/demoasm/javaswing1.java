@@ -4,8 +4,10 @@
  */
 package demoasm;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
@@ -55,6 +57,7 @@ public class javaswing1 extends javax.swing.JFrame {
     public javax.swing.JTextField tfName;
     public javax.swing.JTextField tfPhone;
     public Data model;
+    public int count = 2;
     // End of variables declaration//GEN-END:variables
 
     ActionListener action = new Event(this);
@@ -89,6 +92,24 @@ public class javaswing1 extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+
+        // Menu bar
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JMenu menuFile = new JMenu("File");
+        menuFile.addActionListener(action);
+        menuBar.add(menuFile);
+
+        JMenuItem menuOpen = new JMenuItem("Open");
+        menuOpen.addActionListener(action);
+        menuOpen.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        menuFile.add(menuOpen);
+
+        JMenuItem menuSave = new JMenuItem("Save");
+        menuSave.addActionListener(action);
+        menuSave.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        menuFile.add(menuSave);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MANAGEMENT TEACHER");
@@ -337,20 +358,24 @@ public class javaswing1 extends javax.swing.JFrame {
         this.cbbSubject.setSelectedIndex(0);
     }
 
-    public void themGiaoVien() {
+    public void themGiaoVien() throws Exception{
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
 
         // lay du lieu
         int id = Integer.parseInt(this.tfID.getText());
         int age = Integer.parseInt(this.tfAge.getText());
+        if (age < 22 || age >65) throw new Exception();
         String name = this.tfName.getText();
         String phone = this.tfPhone.getText();
+        if(phone.length() != 10) throw new Exception();
 
         boolean gender = true;
         if(this.rbtnMale.isSelected()) {
             gender = true;
         } else if(this.rbtnFemale.isSelected()) {
             gender = false;
+        } else {
+            throw new Exception();
         }
 
         String position = cbbPosition.getSelectedItem().toString();
@@ -465,52 +490,130 @@ public class javaswing1 extends javax.swing.JFrame {
         }
     }
     public void sapXepGiaoVienTheoId() {
-//        ArrayList<Integer> arrId = new ArrayList<Integer>();
-//        for(int i = 0; i<this.model.getList().size(); i++) {
-//            arrId.add(this.model.getList().get(i).getId());
-//        }
-////        ArrayList<Integer> sortedArr = Collections.sort(arrId);
-//
-//        Teacher temp = new Teacher();
-//        for(int i = 0; i<sortedArr.size(); i++) {
-//            Teacher teacheri = this.model.getList().get(i);
-//            for(int j = i+1 ; j < sortedArr.size(); j++) {
-//                Teacher teacherj = this.model.getList().get(j);
-//                if(teacherj.getId() < teacheri.getId()) {
-//                    temp = teacheri;
-//                    teacheri = teacherj;
-//                    teacherj = temp;
-//                }
-//            }
-//        }
-//
-//        while (true) {
-//            DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
-//            int rowCount = model_table.getRowCount();
-//            if(rowCount==0)
-//                break;
-//            else
-//                // Bắt lỗi khi xóa hàng
-//                try {
-//                    model_table.removeRow(0);
-//                } catch (Exception e) {
-//                    throw e;
-//                }
-//        }
-//
-//        for (Teacher teacher : sortedArr) {
-//            DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
-//            model_table.addRow(new Object[] {
-//                    teacher.getId()+ ""
-//                    , teacher.getName()
-//                    , teacher.getAge()+""
-//                    , teacher.isGender() ? "Male" : "Female"
-//                    , teacher.getSubject()
-//                    , teacher.getPosition()
-//                    , teacher.getPhone()
-//                    }
-//            );
-//        }
+        DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        ArrayList<Integer> newArr = new ArrayList<Integer>();
+        for(Teacher teacher : this.model.getList()) {
+            newArr.add(teacher.getId());
+        }
+        Collections.sort(newArr);
+        // Xoa tat ca cac dong
+        while (true) {
+            DefaultTableModel model_table1 = (DefaultTableModel) tableManagement.getModel();
+            int rowCount = model_table.getRowCount();
+            if(rowCount==0)
+                break;
+            else
+                // Bắt lỗi khi xóa hàng
+                try {
+                    model_table1.removeRow(0);
+                } catch (Exception e) {
+                    throw e;
+                }
+        }
+        ArrayList<Teacher> arrO = new ArrayList<Teacher>();
+        int i = 1;
+        for(int id : newArr) {
+            Teacher teacher = this.model.getTeacherById(id);
+            arrO.add(teacher);
+        }
+        for (Teacher teacher: arrO) {
+            model_table.addRow(new Object[] {
+                    teacher.getId()+ ""
+                    , teacher.getName()
+                    , teacher.getAge()+""
+                    , teacher.isGender() ? "Male" : "Female"
+                    , teacher.getSubject()
+                    , teacher.getPosition()
+                    , teacher.getPhone()
+            });
+        }
+        count++;
+    }
+
+    public void taiLaiDuLieu() {
+        // Xoa tat ca cac dong
+        while (true) {
+            DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+            int rowCount = model_table.getRowCount();
+            if(rowCount==0)
+                break;
+            else
+                // Bắt lỗi khi xóa hàng
+                try {
+                    model_table.removeRow(0);
+                } catch (Exception e) {
+                    throw e;
+                }
+        }
+        DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        for (Teacher teacher: this.model.getList()) {
+            model_table.addRow(new Object[] {
+                    teacher.getId()+ ""
+                    , teacher.getName()
+                    , teacher.getAge()+""
+                    , teacher.isGender() ? "Male" : "Female"
+                    , teacher.getSubject()
+                    , teacher.getPosition()
+                    , teacher.getPhone()
+            });
+        }
+        count++;
+    }
+
+    public void luuFile(){
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showSaveDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            try {
+                try {
+                    this.model.setFileName(file.getAbsolutePath());
+                    FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+                    // Lưu từng đối tượng thí sinh vào file
+                    for (Teacher teacher : this.model.getList()) {
+                        oos.writeObject(teacher);
+                    }
+                    oos.close();
+                } catch (Exception e) {
+                    throw e;
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Cannot save",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+
+    }
+
+    public void moFile() {
+        JFileChooser fc = new JFileChooser();
+        // Mở cửa sổ để các tập tin file (document)
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            ArrayList<Teacher> newList = new ArrayList<Teacher>();
+            try {
+                this.model.setFileName(file.getAbsolutePath());
+                FileInputStream fis = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+
+                // Tạo mảng mới để cập nhật tùng thí sinh vào Ds
+                Teacher teacher = null;
+                while((teacher = (Teacher) ois.readObject())!=null) {
+                    newList.add(teacher);
+                }
+                ois.close();
+            } catch (Exception ignored) {
+
+            }
+            this.model.setList(newList);
+            taiLaiDuLieu();
+        }
+
+
     }
 }
 
@@ -526,7 +629,12 @@ class Event implements ActionListener {
         String event = e.getActionCommand();
 
         if(event.equals("Add")) {
-            view.themGiaoVien();
+            try {
+                view.themGiaoVien();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(view, "Wrong data",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
             view.xoaForm();
         } else if(event.equals("Update")) {
             view.hienThiThongTinLenGiaoVienLenform();
@@ -537,7 +645,18 @@ class Event implements ActionListener {
             view.xoaThongTinGiaoVien();
         } else if(event.equals("Sort")) {
             view.sapXepGiaoVienTheoId();
-            System.out.println("Da sap xep");
+            view.jButton4.setText("Reload");
+
+        } else if(event.equals("Reload")) {
+            view.taiLaiDuLieu();
+            view.jButton4.setText("Sort");
+        } else if(event.equals("Save")) {
+            try {
+                view.luuFile();
+            } catch (Exception ex) {
+            }
+        } else if(event.equals("Open")) {
+            view.moFile();
         }
     }
 

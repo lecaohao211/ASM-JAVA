@@ -56,4 +56,10 @@ public class Data {
         return false;
     }
 
+    public Teacher getTeacherById(int id) {
+        for(Teacher teacher:list) {
+            if(teacher.getId() == id) return teacher;
+        }
+        return null;
+    }
 }

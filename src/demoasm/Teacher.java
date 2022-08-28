@@ -1,6 +1,8 @@
 package demoasm;
 
-public class Teacher {
+import java.io.Serializable;
+
+public class Teacher implements Serializable {
     private int id;
     private String name;
     private int age;
@@ -21,6 +23,8 @@ public class Teacher {
         this.position = position;
         this.phone = phone;
     }
+
+
 
     public int getId() {
         return id;
