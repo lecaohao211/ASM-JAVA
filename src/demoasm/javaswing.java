@@ -8,6 +8,6 @@ package demoasm;
  *
  * @author ASUS
  */
-public class javaswing {
+public class  javaswing {
     
 }

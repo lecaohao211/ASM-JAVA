@@ -165,7 +165,7 @@ public class javaswing1 extends javax.swing.JFrame {
                 new Object [][] {
                 },
                 new String [] {
-                        "ID", "Name", "Age", "Subject", "Gender", "Position", "Phone"
+                        "ID", "Name", "Age", "Gender", "Subject", "Position", "Phone"
                 }
         ) {
             Class[] types = new Class [] {
@@ -176,6 +176,7 @@ public class javaswing1 extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tableManagement.setDefaultEditor(Object.class, null);
         jScrollPane1.setViewportView(tableManagement);
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -192,12 +193,14 @@ public class javaswing1 extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/demoasm/update.png"))); // NOI18N
         jButton1.setText("Update");
+        jButton1.addActionListener(action);
         jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         jButton3.setBackground(new java.awt.Color(153, 153, 153));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/demoasm/save.png"))); // NOI18N
-        jButton3.setText("Save");
+        jButton3.setText("Save teacher");
+        jButton3.addActionListener(action);
         jButton3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
 
         jButton4.setBackground(new java.awt.Color(153, 153, 153));
@@ -362,7 +365,83 @@ public class javaswing1 extends javax.swing.JFrame {
         );
 
     }
+    public void hienThiThongTinLenGiaoVienLenform() {
+        DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        int i_row = tableManagement.getSelectedRow();  // index của dòng
+        model_table.getValueAt(i_row,0);
 
+        int id = Integer.parseInt(model_table.getValueAt(i_row,0) +"");
+        String name = model_table.getValueAt(i_row,1) +"";
+        int age = Integer.parseInt(model_table.getValueAt(i_row,2) +"");
+        String textGender = model_table.getValueAt(i_row,3) +"";
+        boolean gender = textGender.equals("Male");
+        String subject = model_table.getValueAt(i_row,4) +"";
+        String position = model_table.getValueAt(i_row,5) +"";
+        String phone = model_table.getValueAt(i_row,6) +"";
+
+        Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
+
+        this.tfName.setText(name + "");
+        this.tfAge.setText(age + "");
+        this.tfID.setText(id +"");
+        this.tfPhone.setText(phone + "");
+        if(gender) {
+            rbtnMale.setSelected(true);
+        } else {
+            rbtnFemale.setSelected(true);
+        }
+        this.cbbSubject.setSelectedItem(subject);
+        this.cbbPosition.setSelectedItem(position);
+    }
+
+    public void capNhatThongTinGiaoVien() {
+        DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+
+        // lay du lieu
+        int id = Integer.parseInt(this.tfID.getText());
+        int age = Integer.parseInt(this.tfAge.getText());
+        String name = this.tfName.getText();
+        String phone = this.tfPhone.getText();
+
+        boolean gender = true;
+        if(this.rbtnMale.isSelected()) {
+            gender = true;
+        } else if(this.rbtnFemale.isSelected()) {
+            gender = false;
+        }
+
+        String position = cbbPosition.getSelectedItem().toString();
+        String subject = cbbSubject.getSelectedItem().toString();
+        Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
+
+        int index =-1;
+        for(int i = 0; i<model.getList().size(); i++) {
+            if(id== model.getList().get(i).getId()) {
+                index = i;
+            }
+        }
+
+        if(this.model.checkIfExist(teacher)) {
+            int rowCount = model_table.getRowCount();
+            for (int i = 0; i < rowCount; i++) {
+                String idItem = model_table.getValueAt(i, 0) + "";
+                if (idItem.equals(id + "")) {
+                    model_table.setValueAt(id+ "", i, 0);
+                    model_table.setValueAt(name+ "", i, 1);
+                    model_table.setValueAt(age+ "", i, 2);
+                    model_table.setValueAt(gender ?"Male" :"Female", i, 3);
+                    model_table.setValueAt(subject, i, 4);
+                    model_table.setValueAt(position, i, 5);
+                    model_table.setValueAt(phone, i, 6);
+                }
+            }
+            this.model.update(teacher, index);
+        }
+    }
+
+    public void xoaThongTinGiaoVien() {
+
+    }
 }
 
 class Event implements ActionListener {
@@ -379,6 +458,13 @@ class Event implements ActionListener {
         if(event.equals("Add")) {
             view.themGiaoVien();
             view.xoaForm();
+        } else if(event.equals("Update")) {
+            view.hienThiThongTinLenGiaoVienLenform();
+        } else if(event.equals("Save teacher")) {
+            view.capNhatThongTinGiaoVien();
+            view.xoaForm();
+        } else if(event.equals("Delete")) {
+            view.xoaThongTinGiaoVien();
         }
     }
 }

@@ -42,9 +42,9 @@ public class Data {
         this.list.remove(index);
     }
 
-    public void update(Teacher student, int indexDelete) {
+    public void update(Teacher teacher, int indexDelete) {
         this.list.remove(indexDelete);
-        this.list.add(student);
+        this.list.add(teacher);
     }
 
     public boolean checkIfExist(Teacher teacher) {
