@@ -6,6 +6,9 @@ package demoasm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -157,7 +160,7 @@ public class javaswing1 extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/demoasm/delete.png"))); // NOI18N
         jButton2.setText("Delete");
-        jButton2.setActionCommand("");
+        jButton2.addActionListener(action);
         jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 //        jButton2.addActionListener();
 
@@ -207,6 +210,7 @@ public class javaswing1 extends javax.swing.JFrame {
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/demoasm/sort.png"))); // NOI18N
         jButton4.setText("Sort");
+        jButton4.addActionListener(action);
         jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -440,7 +444,73 @@ public class javaswing1 extends javax.swing.JFrame {
     }
 
     public void xoaThongTinGiaoVien() {
+        DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        int i_row = tableManagement.getSelectedRow();
+        int choice = JOptionPane.showConfirmDialog(this,
+                "Do you want to delete this selected line","Delete",
+                JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+        if (choice == JOptionPane.YES_OPTION) {
+            int id = Integer.parseInt(model_table.getValueAt(i_row,0) +"");
+            String name = model_table.getValueAt(i_row,1) +"";
+            int age = Integer.parseInt(model_table.getValueAt(i_row,2) +"");
+            String textGender = model_table.getValueAt(i_row,3) +"";
+            boolean gender = textGender.equals("Male");
+            String subject = model_table.getValueAt(i_row,4) +"";
+            String position = model_table.getValueAt(i_row,5) +"";
+            String phone = model_table.getValueAt(i_row,6) +"";
 
+            Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
+            this.model.delete(teacher);
+            model_table.removeRow(i_row);
+        }
+    }
+    public void sapXepGiaoVienTheoId() {
+//        ArrayList<Integer> arrId = new ArrayList<Integer>();
+//        for(int i = 0; i<this.model.getList().size(); i++) {
+//            arrId.add(this.model.getList().get(i).getId());
+//        }
+////        ArrayList<Integer> sortedArr = Collections.sort(arrId);
+//
+//        Teacher temp = new Teacher();
+//        for(int i = 0; i<sortedArr.size(); i++) {
+//            Teacher teacheri = this.model.getList().get(i);
+//            for(int j = i+1 ; j < sortedArr.size(); j++) {
+//                Teacher teacherj = this.model.getList().get(j);
+//                if(teacherj.getId() < teacheri.getId()) {
+//                    temp = teacheri;
+//                    teacheri = teacherj;
+//                    teacherj = temp;
+//                }
+//            }
+//        }
+//
+//        while (true) {
+//            DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+//            int rowCount = model_table.getRowCount();
+//            if(rowCount==0)
+//                break;
+//            else
+//                // Bắt lỗi khi xóa hàng
+//                try {
+//                    model_table.removeRow(0);
+//                } catch (Exception e) {
+//                    throw e;
+//                }
+//        }
+//
+//        for (Teacher teacher : sortedArr) {
+//            DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+//            model_table.addRow(new Object[] {
+//                    teacher.getId()+ ""
+//                    , teacher.getName()
+//                    , teacher.getAge()+""
+//                    , teacher.isGender() ? "Male" : "Female"
+//                    , teacher.getSubject()
+//                    , teacher.getPosition()
+//                    , teacher.getPhone()
+//                    }
+//            );
+//        }
     }
 }
 
@@ -465,6 +535,144 @@ class Event implements ActionListener {
             view.xoaForm();
         } else if(event.equals("Delete")) {
             view.xoaThongTinGiaoVien();
+        } else if(event.equals("Sort")) {
+            view.sapXepGiaoVienTheoId();
+            System.out.println("Da sap xep");
+        }
+    }
+
+    public class Data {
+        private ArrayList<Teacher> list;
+        private String fileName;
+    
+    
+        public Data() {
+            this.list = new ArrayList<>();
+            this.fileName = "";
+        }
+    
+        public ArrayList<Teacher> getList() {
+            return list;
+        }
+    
+        public void setList(ArrayList<Teacher> list) {
+            this.list = list;
+        }
+    
+        public String getFileName() {
+            return fileName;
+        }
+    
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+    
+        public void insert(Teacher teacher) {
+            list.add(teacher);
+        }
+    
+        public void delete(Teacher teacher) {
+            int index =-1;
+            for(int i = 0; i<this.list.size(); i++) {
+                if(teacher.getId() == this.list.get(i).getId()) {
+                    index = i;
+                }
+            }
+            this.list.remove(index);
+        }
+    
+        public void update(Teacher teacher, int indexDelete) {
+            this.list.remove(indexDelete);
+            this.list.add(teacher);
+        }
+    
+        public boolean checkIfExist(Teacher teacher) {
+            for (Teacher teacher1 : list) {
+                if(teacher1.getId() == teacher.getId()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    
+    }
+
+    public class Teacher {
+        private int id;
+        private String name;
+        private int age;
+        private boolean gender;
+        private String subject;
+        private String position;
+        private String phone;
+    
+        public Teacher() {
+        }
+    
+        public Teacher(int id, String name, int age, boolean gender, String subject, String position, String phone) {
+            this.id = id;
+            this.name = name;
+            this.age = age;
+            this.gender = gender;
+            this.subject = subject;
+            this.position = position;
+            this.phone = phone;
+        }
+    
+        public int getId() {
+            return id;
+        }
+    
+        public void setId(int id) {
+            this.id = id;
+        }
+    
+        public String getName() {
+            return name;
+        }
+    
+        public void setName(String name) {
+            this.name = name;
+        }
+    
+        public int getAge() {
+            return age;
+        }
+    
+        public void setAge(int age) {
+            this.age = age;
+        }
+    
+        public boolean isGender() {
+            return gender;
+        }
+    
+        public void setGender(boolean gender) {
+            this.gender = gender;
+        }
+    
+        public String getSubject() {
+            return subject;
+        }
+    
+        public void setSubject(String subject) {
+            this.subject = subject;
+        }
+    
+        public String getPosition() {
+            return position;
+        }
+    
+        public void setPosition(String position) {
+            this.position = position;
+        }
+    
+        public String getPhone() {
+            return phone;
+        }
+    
+        public void setPhone(String phone) {
+            this.phone = phone;
         }
     }
 }
