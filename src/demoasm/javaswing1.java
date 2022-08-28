@@ -349,6 +349,7 @@ public class javaswing1 extends javax.swing.JFrame {
     // Các hàm thực hiện
 
     public void xoaForm() {
+        // Lấy từng trường trong form để xóa trở về mặc định
         this.tfID.setText("");
         this.tfAge.setText("");
         this.tfName.setText("");
@@ -359,30 +360,43 @@ public class javaswing1 extends javax.swing.JFrame {
     }
 
     public void themGiaoVien() throws Exception{
+        // lấy ra bảng
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
 
-        // lay du lieu
+        //lấy dữ liệu id
         int id = Integer.parseInt(this.tfID.getText());
+        //lấy dữ liệu age
         int age = Integer.parseInt(this.tfAge.getText());
+        // nếu age <22 hoặc >65 thi ném ra Exception
         if (age < 22 || age >65) throw new Exception();
+        // lấy dữ liệu name
         String name = this.tfName.getText();
+        // lấy dữ liệu phone
         String phone = this.tfPhone.getText();
+        // Nếu sđt ko có ký tự dài  = 10 thì ném ra Exception
         if(phone.length() != 10) throw new Exception();
 
+        // Lấy ra dữ liệu giới tính
         boolean gender = true;
         if(this.rbtnMale.isSelected()) {
             gender = true;
         } else if(this.rbtnFemale.isSelected()) {
             gender = false;
         } else {
+            // Ném ra lỗi nếu không tick vào ô nào
             throw new Exception();
         }
 
+        // lấy dữ liệu position
         String position = cbbPosition.getSelectedItem().toString();
+        //lấy dữ liệu subject
         String subject = cbbSubject.getSelectedItem().toString();
+        // Tạo đối tượng Teacher mới có dữ liệu như mình đã lấy
         Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
 
+        // thêm Teacher vào danh sách
         this.model.insert(teacher);
+        // Thêm hàng mới vào bảng
         model_table.addRow(new Object[] {
                 id+ ""
                 , name
@@ -395,21 +409,31 @@ public class javaswing1 extends javax.swing.JFrame {
 
     }
     public void hienThiThongTinLenGiaoVienLenform() {
+        // Lấy ra bảng
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
-        int i_row = tableManagement.getSelectedRow();  // index của dòng
+        int i_row = tableManagement.getSelectedRow();  // index của dòng người dùng chọn
         model_table.getValueAt(i_row,0);
 
+        // lấy thông tin của hàng người dùng chọn có cột 0 (cột id)
         int id = Integer.parseInt(model_table.getValueAt(i_row,0) +"");
+        // lấy thông tin của hàng người dùng chọn có cột 1 (cột name)
         String name = model_table.getValueAt(i_row,1) +"";
+        // lấy thông tin của hàng người dùng chọn có cột 2 (cột age)
         int age = Integer.parseInt(model_table.getValueAt(i_row,2) +"");
+        // lấy thông tin của hàng người dùng chọn có cột 3 (cột gendẻ
         String textGender = model_table.getValueAt(i_row,3) +"";
         boolean gender = textGender.equals("Male");
+        // lấy thông tin của hàng người dùng chọn có cột 4 (subject)
         String subject = model_table.getValueAt(i_row,4) +"";
+        // lấy thông tin của hàng người dùng chọn có cột 5 (position)
         String position = model_table.getValueAt(i_row,5) +"";
+        // lấy thông tin của hàng người dùng chọn có cột 6 (phone)
         String phone = model_table.getValueAt(i_row,6) +"";
 
+        // Tạo đối tượng Teacher mới
         Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
 
+        // Lấy các dữ liệu ở dưới bảng để hiển thị lên các trường của form
         this.tfName.setText(name + "");
         this.tfAge.setText(age + "");
         this.tfID.setText(id +"");
@@ -424,6 +448,7 @@ public class javaswing1 extends javax.swing.JFrame {
     }
 
     public void capNhatThongTinGiaoVien() {
+        // Lấy ra bảng
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
 
         // lay du lieu
@@ -443,18 +468,23 @@ public class javaswing1 extends javax.swing.JFrame {
         String subject = cbbSubject.getSelectedItem().toString();
         Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
 
+        // Lấy index của sinh viên cần xóa
         int index =-1;
         for(int i = 0; i<model.getList().size(); i++) {
             if(id== model.getList().get(i).getId()) {
                 index = i;
             }
         }
-
+        // nếu tồn tại sinh viên trong danh sách
         if(this.model.checkIfExist(teacher)) {
+            // số lượng dòng
             int rowCount = model_table.getRowCount();
+            // lặp qua tất cả các dòng
             for (int i = 0; i < rowCount; i++) {
+                // lấy ID của dòng i cột 0 (cột id)
                 String idItem = model_table.getValueAt(i, 0) + "";
-                if (idItem.equals(id + "")) {
+                if (idItem.equals(id + "")) { // nếu id của dòng bằng id muốn cập nhật
+                    // cập nhật dữ liệu lên bảng
                     model_table.setValueAt(id+ "", i, 0);
                     model_table.setValueAt(name+ "", i, 1);
                     model_table.setValueAt(age+ "", i, 2);
@@ -464,17 +494,23 @@ public class javaswing1 extends javax.swing.JFrame {
                     model_table.setValueAt(phone, i, 6);
                 }
             }
+            // cập nhật sinh viên vào danh sách
             this.model.update(teacher, index);
         }
     }
 
     public void xoaThongTinGiaoVien() {
+        // Lấy bảng ra
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        // dòng mà người dùng chọn
         int i_row = tableManagement.getSelectedRow();
+        // nếu người ta ấn delete sẽ hiển ra cửa sổ thông báo này
         int choice = JOptionPane.showConfirmDialog(this,
                 "Do you want to delete this selected line","Delete",
                 JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+        // nếu chọn có
         if (choice == JOptionPane.YES_OPTION) {
+            // lấy dữ liệu trên hàng đó
             int id = Integer.parseInt(model_table.getValueAt(i_row,0) +"");
             String name = model_table.getValueAt(i_row,1) +"";
             int age = Integer.parseInt(model_table.getValueAt(i_row,2) +"");
@@ -484,17 +520,24 @@ public class javaswing1 extends javax.swing.JFrame {
             String position = model_table.getValueAt(i_row,5) +"";
             String phone = model_table.getValueAt(i_row,6) +"";
 
+            // aaọ đối tượng sinh viên mới
             Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
+            // xóa đối tượng đó khỏi danh sách
             this.model.delete(teacher);
+            // xóa hàng trong bảng
             model_table.removeRow(i_row);
         }
     }
     public void sapXepGiaoVienTheoId() {
+        // lấy ra bảng
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        // tạo arraylist mới để chứa Id của tất cgiáo viên trong danh sách
         ArrayList<Integer> newArr = new ArrayList<Integer>();
+        // lặp qua tất cả trong danh sách và thêm vào mảng mới
         for(Teacher teacher : this.model.getList()) {
             newArr.add(teacher.getId());
         }
+        // sắp xếp theo thứ tự tăng dần trong arraylist
         Collections.sort(newArr);
         // Xoa tat ca cac dong
         while (true) {
@@ -510,12 +553,15 @@ public class javaswing1 extends javax.swing.JFrame {
                     throw e;
                 }
         }
+        //tạo aray mới chứa các đối tượng giáo viên đã đc sắp xếp
         ArrayList<Teacher> arrO = new ArrayList<Teacher>();
         int i = 1;
+        // theemgiaos viên vào aray mới
         for(int id : newArr) {
             Teacher teacher = this.model.getTeacherById(id);
             arrO.add(teacher);
         }
+        //theeduwx liệu của từng giáo viên đã đc sắp xếp
         for (Teacher teacher: arrO) {
             model_table.addRow(new Object[] {
                     teacher.getId()+ ""
@@ -527,7 +573,6 @@ public class javaswing1 extends javax.swing.JFrame {
                     , teacher.getPhone()
             });
         }
-        count++;
     }
 
     public void taiLaiDuLieu() {
@@ -546,6 +591,7 @@ public class javaswing1 extends javax.swing.JFrame {
                 }
         }
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
+        // Tải dữ liệu của giáo viên trong danh sách lên lại trong bảng
         for (Teacher teacher: this.model.getList()) {
             model_table.addRow(new Object[] {
                     teacher.getId()+ ""
@@ -557,16 +603,17 @@ public class javaswing1 extends javax.swing.JFrame {
                     , teacher.getPhone()
             });
         }
-        count++;
     }
 
-    public void luuFile(){
+    public void luuFile(){// hiển thị của sổ chọn file
         JFileChooser fc = new JFileChooser();
         int returnVal = fc.showSaveDialog(this);
+        // nếu chọn
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             try {
                 try {
+                    // lưu tên
                     this.model.setFileName(file.getAbsolutePath());
                     FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -594,8 +641,10 @@ public class javaswing1 extends javax.swing.JFrame {
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
+            // tạo danh sách mới
             ArrayList<Teacher> newList = new ArrayList<Teacher>();
             try {
+                // lưu tên file
                 this.model.setFileName(file.getAbsolutePath());
                 FileInputStream fis = new FileInputStream(file);
                 ObjectInputStream ois = new ObjectInputStream(fis);
@@ -609,7 +658,9 @@ public class javaswing1 extends javax.swing.JFrame {
             } catch (Exception ignored) {
 
             }
+            // set danh sách sinh viên bằng danh sách mới
             this.model.setList(newList);
+            // dữ liệu ddc tải lên lại trên bảng
             taiLaiDuLieu();
         }
 
@@ -626,9 +677,12 @@ class Event implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // lấy phần text trong từng nút khi người dùng ấn vào
         String event = e.getActionCommand();
 
+        // nếu ấn add
         if(event.equals("Add")) {
+            // bắt lỗi khi người dùng nhập k đúng yêu cầu
             try {
                 view.themGiaoVien();
             } catch (Exception ex) {
@@ -636,26 +690,23 @@ class Event implements ActionListener {
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
             view.xoaForm();
-        } else if(event.equals("Update")) {
+        } else if(event.equals("Update")) { //nếu người dùng ấn cập nhật
             view.hienThiThongTinLenGiaoVienLenform();
-        } else if(event.equals("Save teacher")) {
+        } else if(event.equals("Save teacher")) { //nếu người dùng ấn lưu giáo viên
             view.capNhatThongTinGiaoVien();
             view.xoaForm();
-        } else if(event.equals("Delete")) {
+        } else if(event.equals("Delete")) { // nếu người dùng ấn xóa
             view.xoaThongTinGiaoVien();
-        } else if(event.equals("Sort")) {
+        } else if(event.equals("Sort")) { // nếu người dùng ấn sort
             view.sapXepGiaoVienTheoId();
-            view.jButton4.setText("Reload");
+            view.jButton4.setText("Reload"); //Biến nuts Sort thành Reload
 
-        } else if(event.equals("Reload")) {
+        } else if(event.equals("Reload")) { // nếu người dùng ấn Reload
             view.taiLaiDuLieu();
-            view.jButton4.setText("Sort");
-        } else if(event.equals("Save")) {
-            try {
-                view.luuFile();
-            } catch (Exception ex) {
-            }
-        } else if(event.equals("Open")) {
+            view.jButton4.setText("Sort"); // Biến nút Reload thành Sort
+        } else if(event.equals("Save")) {  // Nếu người dùng ấn Save
+            view.luuFile();
+        } else if(event.equals("Open")) {  // Nếu người dùng ấn Open
             view.moFile();
         }
     }
