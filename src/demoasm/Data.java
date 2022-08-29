@@ -5,17 +5,13 @@ import java.util.ArrayList;
 public class Data {
     private ArrayList<Teacher> list;
     private String fileName;
-
-
     public Data() {
         this.list = new ArrayList<>();
         this.fileName = "";
     }
-
     public ArrayList<Teacher> getList() {
         return list;
     }
-
     public void setList(ArrayList<Teacher> list) {
         this.list = list;
     }

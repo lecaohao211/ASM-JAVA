@@ -359,7 +359,6 @@ public class javaswing1 extends javax.swing.JFrame {
     public void themGiaoVien() throws Exception{
         // lấy ra bảng
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
-
         //lấy dữ liệu id
         int id = Integer.parseInt(this.tfID.getText());
         //lấy dữ liệu age
@@ -372,7 +371,6 @@ public class javaswing1 extends javax.swing.JFrame {
         String phone = this.tfPhone.getText();
         // Nếu sđt ko có ký tự dài  = 10 thì ném ra Exception
         if(phone.length() != 10) throw new Exception();
-
         // Lấy ra dữ liệu giới tính
         boolean gender = true;
         if(this.rbtnMale.isSelected()) {
@@ -410,7 +408,6 @@ public class javaswing1 extends javax.swing.JFrame {
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
         int i_row = tableManagement.getSelectedRow();  // index của dòng người dùng chọn
         model_table.getValueAt(i_row,0);
-
         // lấy thông tin của hàng người dùng chọn có cột 0 (cột id)
         int id = Integer.parseInt(model_table.getValueAt(i_row,0) +"");
         // lấy thông tin của hàng người dùng chọn có cột 1 (cột name)
@@ -426,10 +423,8 @@ public class javaswing1 extends javax.swing.JFrame {
         String position = model_table.getValueAt(i_row,5) +"";
         // lấy thông tin của hàng người dùng chọn có cột 6 (phone)
         String phone = model_table.getValueAt(i_row,6) +"";
-
         // Tạo đối tượng Teacher mới
         Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
-
         // Lấy các dữ liệu ở dưới bảng để hiển thị lên các trường của form
         this.tfName.setText(name + "");
         this.tfAge.setText(age + "");
@@ -447,32 +442,28 @@ public class javaswing1 extends javax.swing.JFrame {
     public void capNhatThongTinGiaoVien() {
         // Lấy ra bảng
         DefaultTableModel model_table = (DefaultTableModel) tableManagement.getModel();
-
         // lay du lieu
         int id = Integer.parseInt(this.tfID.getText());
         int age = Integer.parseInt(this.tfAge.getText());
         String name = this.tfName.getText();
         String phone = this.tfPhone.getText();
-
         boolean gender = true;
         if(this.rbtnMale.isSelected()) {
             gender = true;
         } else if(this.rbtnFemale.isSelected()) {
             gender = false;
         }
-
         String position = cbbPosition.getSelectedItem().toString();
         String subject = cbbSubject.getSelectedItem().toString();
         Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
-
-        // Lấy index của sinh viên cần xóa
+        // Lấy index của giáo viên cần xóa
         int index =-1;
         for(int i = 0; i<model.getList().size(); i++) {
             if(id== model.getList().get(i).getId()) {
                 index = i;
             }
         }
-        // nếu tồn tại sinh viên trong danh sách
+        // nếu tồn tại giáo viên trong danh sách
         if(this.model.checkIfExist(teacher)) {
             // số lượng dòng
             int rowCount = model_table.getRowCount();
@@ -491,7 +482,7 @@ public class javaswing1 extends javax.swing.JFrame {
                     model_table.setValueAt(phone, i, 6);
                 }
             }
-            // cập nhật sinh viên vào danh sách
+            // cập nhật giáo viên vào danh sách
             this.model.update(teacher, index);
         }
     }
@@ -516,8 +507,7 @@ public class javaswing1 extends javax.swing.JFrame {
             String subject = model_table.getValueAt(i_row,4) +"";
             String position = model_table.getValueAt(i_row,5) +"";
             String phone = model_table.getValueAt(i_row,6) +"";
-
-            // aaọ đối tượng sinh viên mới
+            // tạo đối tượng giáo viên mới
             Teacher teacher = new Teacher(id,name,age,gender,subject,position,phone);
             // xóa đối tượng đó khỏi danh sách
             this.model.delete(teacher);
@@ -645,17 +635,13 @@ public class javaswing1 extends javax.swing.JFrame {
                 this.model.setFileName(file.getAbsolutePath());
                 FileInputStream fis = new FileInputStream(file);
                 ObjectInputStream ois = new ObjectInputStream(fis);
-
                 // Tạo mảng mới để cập nhật tùng thí sinh vào Ds
                 Teacher teacher = null;
                 while((teacher = (Teacher) ois.readObject())!=null) {
-                    newList.add(teacher);
-                }
+                    newList.add(teacher);}
                 ois.close();
-            } catch (Exception ignored) {
-
-            }
-            // set danh sách sinh viên bằng danh sách mới
+            } catch (Exception ignored) {}
+            // set danh sách giáo viên bằng danh sách mới
             this.model.setList(newList);
             // dữ liệu ddc tải lên lại trên bảng
             taiLaiDuLieu();
@@ -708,7 +694,8 @@ class Event implements ActionListener {
             }
 
 
-        } else if(event.equals("Sort")) { // nếu người dùng ấn sort
+        } else if(event.equals("Sort")) {
+            // nếu người dùng ấn sort
             view.sapXepGiaoVienTheoId();
             view.jButton4.setText("Reload"); //Biến nuts Sort thành Reload
 
@@ -718,7 +705,13 @@ class Event implements ActionListener {
         } else if(event.equals("Save")) {  // Nếu người dùng ấn Save
             view.luuFile();
         } else if(event.equals("Open")) {  // Nếu người dùng ấn Open
-            view.moFile();
+//            view.moFile();
+            try {
+                this.view.moFile();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(view, "Your file is empty or cannot open",
+                        "Error",JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
