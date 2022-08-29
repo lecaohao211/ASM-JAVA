@@ -209,7 +209,6 @@ public class javaswing1 extends javax.swing.JFrame {
 
         cbbPosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Principal", "Assistant principals", "Teacher", "Intern" }));
         cbbPosition.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-
         cbbSubject.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "English", "Technology Information", "Graphic Design", "Business Administration", "Marketing Management", "Administration Events", "Management Communication", "Sotf Skill" }));
         cbbSubject.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
@@ -219,7 +218,6 @@ public class javaswing1 extends javax.swing.JFrame {
         jButton1.setText("Update");
         jButton1.addActionListener(action);
         jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-
         jButton3.setBackground(new java.awt.Color(153, 153, 153));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/demoasm/save.png"))); // NOI18N
@@ -347,7 +345,6 @@ public class javaswing1 extends javax.swing.JFrame {
     }
 
     // Các hàm thực hiện
-
     public void xoaForm() {
         // Lấy từng trường trong form để xóa trở về mặc định
         this.tfID.setText("");
@@ -670,11 +667,9 @@ public class javaswing1 extends javax.swing.JFrame {
 
 class Event implements ActionListener {
     public javaswing1 view;
-
     public Event(javaswing1 view) {
         this.view = view;
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         // lấy phần text trong từng nút khi người dùng ấn vào
@@ -690,13 +685,29 @@ class Event implements ActionListener {
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
             view.xoaForm();
-        } else if(event.equals("Update")) { //nếu người dùng ấn cập nhật
-            view.hienThiThongTinLenGiaoVienLenform();
+            //nếu người dùng ấn cập nhật
+        } else if(event.equals("Update")) {
+            try{
+                this.view.hienThiThongTinLenGiaoVienLenform();
+            }catch(Exception e1){
+                JOptionPane.showMessageDialog(view, "Please select a teacher",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+//            view.hienThiThongTinLenGiaoVienLenform();
         } else if(event.equals("Save teacher")) { //nếu người dùng ấn lưu giáo viên
             view.capNhatThongTinGiaoVien();
             view.xoaForm();
-        } else if(event.equals("Delete")) { // nếu người dùng ấn xóa
-            view.xoaThongTinGiaoVien();
+            // nếu người dùng ấn xóa
+        } else if(event.equals("Delete")) {
+            try{
+                this.view.xoaThongTinGiaoVien();
+            }catch(Exception e2){
+                JOptionPane.showMessageDialog(view, "Please select a teacher",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+
         } else if(event.equals("Sort")) { // nếu người dùng ấn sort
             view.sapXepGiaoVienTheoId();
             view.jButton4.setText("Reload"); //Biến nuts Sort thành Reload
@@ -711,138 +722,4 @@ class Event implements ActionListener {
         }
     }
 
-    public class Data {
-        private ArrayList<Teacher> list;
-        private String fileName;
-    
-    
-        public Data() {
-            this.list = new ArrayList<>();
-            this.fileName = "";
-        }
-    
-        public ArrayList<Teacher> getList() {
-            return list;
-        }
-    
-        public void setList(ArrayList<Teacher> list) {
-            this.list = list;
-        }
-    
-        public String getFileName() {
-            return fileName;
-        }
-    
-        public void setFileName(String fileName) {
-            this.fileName = fileName;
-        }
-    
-        public void insert(Teacher teacher) {
-            list.add(teacher);
-        }
-    
-        public void delete(Teacher teacher) {
-            int index =-1;
-            for(int i = 0; i<this.list.size(); i++) {
-                if(teacher.getId() == this.list.get(i).getId()) {
-                    index = i;
-                }
-            }
-            this.list.remove(index);
-        }
-    
-        public void update(Teacher teacher, int indexDelete) {
-            this.list.remove(indexDelete);
-            this.list.add(teacher);
-        }
-    
-        public boolean checkIfExist(Teacher teacher) {
-            for (Teacher teacher1 : list) {
-                if(teacher1.getId() == teacher.getId()) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    
-    }
-
-    public class Teacher {
-        private int id;
-        private String name;
-        private int age;
-        private boolean gender;
-        private String subject;
-        private String position;
-        private String phone;
-    
-        public Teacher() {
-        }
-    
-        public Teacher(int id, String name, int age, boolean gender, String subject, String position, String phone) {
-            this.id = id;
-            this.name = name;
-            this.age = age;
-            this.gender = gender;
-            this.subject = subject;
-            this.position = position;
-            this.phone = phone;
-        }
-    
-        public int getId() {
-            return id;
-        }
-    
-        public void setId(int id) {
-            this.id = id;
-        }
-    
-        public String getName() {
-            return name;
-        }
-    
-        public void setName(String name) {
-            this.name = name;
-        }
-    
-        public int getAge() {
-            return age;
-        }
-    
-        public void setAge(int age) {
-            this.age = age;
-        }
-    
-        public boolean isGender() {
-            return gender;
-        }
-    
-        public void setGender(boolean gender) {
-            this.gender = gender;
-        }
-    
-        public String getSubject() {
-            return subject;
-        }
-    
-        public void setSubject(String subject) {
-            this.subject = subject;
-        }
-    
-        public String getPosition() {
-            return position;
-        }
-    
-        public void setPosition(String position) {
-            this.position = position;
-        }
-    
-        public String getPhone() {
-            return phone;
-        }
-    
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-    }
 }
